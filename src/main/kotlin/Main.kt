@@ -1,4 +1,5 @@
-fun main(args: Array<String>) {
+fun main() {
     Day1()
     Day2()
+    Day3()
 }
