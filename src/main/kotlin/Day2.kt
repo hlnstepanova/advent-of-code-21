@@ -1,6 +1,34 @@
 class Day2 {
 
-    val input = """forward 2
+    init {
+        println("----Day 2----")
+        println("Answer I: ${calculate(true)}")
+        println("Answer II: ${calculate()}")
+    }
+
+    fun calculate(partI: Boolean = false): Int {
+        val instructions = input.split("\n").toTypedArray()
+        var depth = 0
+        var position = 0
+        var aim = 0
+        instructions.forEach {
+            val split = it.split(" ")
+            val instruction = split[0]
+            val value = split[1].toInt()
+            when (instruction) {
+                "forward" -> if (partI) position += value else run {
+                    position += value
+                    depth += value * aim
+                }
+                "down" -> if (partI) depth += value else aim += value
+                "up" -> if (partI) depth -= value else aim -= value
+            }
+        }
+        return depth * position
+    }
+
+    companion object{
+        val input = """forward 2
 down 4
 down 3
 up 4
@@ -1000,31 +1028,6 @@ up 9
 down 1
 down 7
 forward 1""".trimIndent()
-
-    init {
-        println("----Day 2----")
-        println("Answer I: ${calculate(true)}")
-        println("Answer II: ${calculate()}")
     }
 
-    fun calculate(partI: Boolean = false): Int {
-        val instructions = input.split("\n").toTypedArray()
-        var depth = 0
-        var position = 0
-        var aim = 0
-        instructions.forEach {
-            val split = it.split(" ")
-            val instruction = split[0]
-            val value = split[1].toInt()
-            when (instruction) {
-                "forward" -> if (partI) position += value else run {
-                    position += value
-                    depth += value * aim
-                }
-                "down" -> if (partI) depth += value else aim += value
-                "up" -> if (partI) depth -= value else aim -= value
-            }
-        }
-        return depth * position
-    }
 }

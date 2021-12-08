@@ -1,6 +1,31 @@
 class Day1 {
 
-    val input = """
+    init {
+        println("----Day 1----")
+
+        val depths =  input.split("\n").toTypedArray().map { it.toInt() }
+        println("Answer I: ${partI(depths)}")
+
+        val groupedDepths = depths.mapIndexed { index, value -> value + depths.getOrElse(index+1) { 0 } + depths.getOrElse(index+2) { 0 } }
+        println("Answer II: ${partII(groupedDepths)}")
+    }
+
+    fun partI(depths: List<Int>): Int {
+        var count = 0
+        depths.forEachIndexed { index, value ->
+            if (index >= 1 && value - depths[index - 1] > 0) {
+                count += 1
+            }
+        }
+        return count
+    }
+
+    fun partII(groupedDepths: List<Int>): Int {
+        return partI(groupedDepths)
+    }
+
+    companion object{
+        val input = """
         103
         112
         111
@@ -2002,28 +2027,5 @@ class Day1 {
         6741
         6740
     """.trimIndent()
-
-    init {
-        println("----Day 1----")
-
-        val depths =  input.split("\n").toTypedArray().map { it.toInt() }
-        println("Answer I: ${partI(depths)}")
-
-        val groupedDepths = depths.mapIndexed { index, value -> value + depths.getOrElse(index+1) { 0 } + depths.getOrElse(index+2) { 0 } }
-        println("Answer II: ${partII(groupedDepths)}")
-    }
-
-    fun partI(depths: List<Int>): Int {
-        var count = 0
-        depths.forEachIndexed { index, value ->
-            if (index >= 1 && value - depths[index - 1] > 0) {
-                count += 1
-            }
-        }
-        return count
-    }
-
-    fun partII(groupedDepths: List<Int>): Int {
-        return partI(groupedDepths)
     }
 }

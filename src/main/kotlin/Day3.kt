@@ -1,6 +1,69 @@
 class Day3 {
 
-    val input = """000011110010
+    private val numbers = input.split("\n").map { it.trim() }.toTypedArray()
+
+    init {
+        println("----Day 3----")
+        println("Answer I: ${partI()}")
+        println("Answer II: ${partII()}")
+    }
+
+    fun partI(): Int {
+        var result = Array(12) { 0 }
+        val addResult = numbers.fold(result) { sum, element ->
+            sum.zip(
+                element.trim().toCharArray().map { it.digitToInt() },
+                Int::plus
+            ).toTypedArray()
+        }
+        return addResult.findGammaEpsilonProduct()
+    }
+
+
+    fun partII(): Int {
+        val oxygen = iterateForElement(numbers, "", true).toDecimal()
+        val co2 = iterateForElement(numbers, "", false).toDecimal()
+        return oxygen * co2
+    }
+
+    fun iterateForElement(array: Array<String>, memory: String, isOxygen: Boolean): String {
+        if (array.size == 1) {
+            return memory.plus(array[0])
+        }
+        val firstValues = array.map { it[0].digitToInt() }
+        val prevalence = firstValues.reduce { sum, element -> sum + element }
+        val mostCommon = if (prevalence >= array.size / 2.0) "1" else "0"
+        val leastCommon = ((1 + mostCommon.toInt()) % 2).toString()
+        val digit = if (isOxygen) mostCommon else leastCommon
+        val filtered = array.filter { it.startsWith(digit) }
+        val sliced = filtered.map { it.substring(1) }.toTypedArray()
+        return iterateForElement(sliced, memory.plus(digit), isOxygen)
+    }
+
+    fun Array<Int>.findGammaEpsilonProduct(): Int {
+        var baseArray = Array(12) { 1 }
+        val gammaArray = this.map { if (it >= numbers.size / 2.0) 1 else 0 }.toTypedArray()
+        val epsilonArray = baseArray.zip(gammaArray) { a, b -> (a + b) % 2 }.toTypedArray()
+        val gamma = gammaArray.toDecimal()
+        val epsilon = epsilonArray.toDecimal()
+        return gamma * epsilon
+    }
+
+
+    fun Array<Int>.toDecimal(): Int {
+        return this.reversed().foldIndexed(0) { index, sum, element -> sum + element * 2.pow(index) }
+    }
+
+    fun String.toDecimal(): Int {
+        return toCharArray().map { it.digitToInt() }.toTypedArray().toDecimal()
+    }
+
+    fun Int.pow(n: Int): Int {
+        return Array(n) { this }.fold(1) { product, element -> product * element }
+    }
+
+    companion object{
+        val input = """000011110010
         010000100100
         010011111111
         000101001111
@@ -1000,66 +1063,5 @@ class Day3 {
         110100000101
         011001000001
         001011000111""".trimIndent()
-
-    private val numbers = input.split("\n").map { it.trim() }.toTypedArray()
-
-    init {
-        println("----Day 3----")
-        println("Answer I: ${partI()}")
-        println("Answer II: ${partII()}")
-    }
-
-    fun partI(): Int {
-        var result = Array(12) { 0 }
-        val addResult = numbers.fold(result) { sum, element ->
-            sum.zip(
-                element.trim().toCharArray().map { it.digitToInt() },
-                Int::plus
-            ).toTypedArray()
-        }
-        return addResult.findGammaEpsilonProduct()
-    }
-
-
-    fun partII(): Int {
-        val oxygen = iterateForElement(numbers, "", true).toDecimal()
-        val co2 = iterateForElement(numbers, "", false).toDecimal()
-        return oxygen * co2
-    }
-
-    fun iterateForElement(array: Array<String>, memory: String, isOxygen: Boolean): String {
-        if (array.size == 1) {
-            return memory.plus(array[0])
-        }
-        val firstValues = array.map { it[0].digitToInt() }
-        val prevalence = firstValues.reduce { sum, element -> sum + element }
-        val mostCommon = if (prevalence >= array.size / 2.0) "1" else "0"
-        val leastCommon = ((1 + mostCommon.toInt()) % 2).toString()
-        val digit = if (isOxygen) mostCommon else leastCommon
-        val filtered = array.filter { it.startsWith(digit) }
-        val sliced = filtered.map { it.substring(1) }.toTypedArray()
-        return iterateForElement(sliced, memory.plus(digit), isOxygen)
-    }
-
-    fun Array<Int>.findGammaEpsilonProduct(): Int {
-        var baseArray = Array(12) { 1 }
-        val gammaArray = this.map { if (it >= numbers.size / 2.0) 1 else 0 }.toTypedArray()
-        val epsilonArray = baseArray.zip(gammaArray) { a, b -> (a + b) % 2 }.toTypedArray()
-        val gamma = gammaArray.toDecimal()
-        val epsilon = epsilonArray.toDecimal()
-        return gamma * epsilon
-    }
-
-
-    fun Array<Int>.toDecimal(): Int {
-        return this.reversed().foldIndexed(0) { index, sum, element -> sum + element * 2.pow(index) }
-    }
-
-    fun String.toDecimal(): Int {
-        return toCharArray().map { it.digitToInt() }.toTypedArray().toDecimal()
-    }
-
-    fun Int.pow(n: Int): Int {
-        return Array(n) { this }.fold(1) { product, element -> product * element }
     }
 }
