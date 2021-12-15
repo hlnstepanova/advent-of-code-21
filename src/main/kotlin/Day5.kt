@@ -14,7 +14,6 @@ class Day5 {
 
 
     fun countRepeatingPoints(ventPoints: ArrayList<Point>): Int{
-        // count repeating points
         val countMap = mutableMapOf<Point, Int>()
         ventPoints.forEach { point ->
             countMap[point] = (countMap[point]?:0)+1
